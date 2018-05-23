@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数据结构ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下  源码分析类的继承关系 public class ConcurrentHashMap&amp;lt;K,V&amp;gt; extends AbstractMap&amp;lt;K,V&amp;gt; implements ConcurrentMap&amp;lt;K,V&amp;gt;, Serializa">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConcurrentHashMap源码">
+<meta property="og:url" content="http://jyzhangbo.cn/2017/12/22/ConcurrentHashMap源码/index.html">
+<meta property="og:site_name" content="jyzhangbo的博客">
+<meta property="og:description" content="数据结构ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下  源码分析类的继承关系 public class ConcurrentHashMap&amp;lt;K,V&amp;gt; extends AbstractMap&amp;lt;K,V&amp;gt; implements ConcurrentMap&amp;lt;K,V&amp;gt;, Serializa">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://jyzhangbo.cn/img/ConcurrentHashMap.png">
+<meta property="og:image" content="http://jyzhangbo.cn/img/node.png">
+<meta property="og:updated_time" content="2018-05-23T04:00:56.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ConcurrentHashMap源码">
+<meta name="twitter:description" content="数据结构ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下  源码分析类的继承关系 public class ConcurrentHashMap&amp;lt;K,V&amp;gt; extends AbstractMap&amp;lt;K,V&amp;gt; implements ConcurrentMap&amp;lt;K,V&amp;gt;, Serializa">
+<meta name="twitter:image" content="http://jyzhangbo.cn/img/ConcurrentHashMap.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jyzhangbo.cn/2017/12/22/ConcurrentHashMap源码/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ConcurrentHashMap源码 | jyzhangbo的博客</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jyzhangbo的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">没有什么是不能完成的</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Beranda</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Arsip</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2017/12/22/ConcurrentHashMap源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="jyzhangbo">
+      <meta itemprop="description" content="我的博客我做主">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jyzhangbo的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ConcurrentHashMap源码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Diposting di</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2017-12-22 16:44:38" itemprop="dateCreated datePublished" datetime="2017-12-22T16:44:38+08:00">2017-12-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2018-05-23 12:00:56" itemprop="dateModified" datetime="2018-05-23T12:00:56+08:00">2018-05-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下</p>
+<p><img src="/img/ConcurrentHashMap.png" alt="img"></p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><h5 id="类的继承关系"><a href="#类的继承关系" class="headerlink" title="类的继承关系"></a>类的继承关系</h5><blockquote>
+<p>public class ConcurrentHashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt; implements ConcurrentMap&lt;K,V&gt;, Serializable {}</p>
+</blockquote>
+<h5 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h5><p><img src="/img/node.png" alt="img"></p>
+<p>很庞大的内部类，其中还有BulkTask及其子类，实在1.8版本添加的，有几十个暂时不知道干啥用呢。</p>
+<a id="more"></a>
+<ol>
+<li>node类</li>
+</ol>
+<p>Node类主要用于存储具体键值对，其子类有ForwardingNode、ReservationNode、TreeNode和TreeBin四个子类。</p>
+<ol start="2">
+<li>Traverser类</li>
+</ol>
+<p>Traverser类主要用于遍历操作，其子类有BaseIterator、KeySpliterator、ValueSpliterator、EntrySpliterator四个类，BaseIterator用于遍历操作。KeySplitertor、ValueSpliterator、EntrySpliterator则用于键、值、键值对的划分。</p>
+<ol start="3">
+<li>CollectionView类</li>
+</ol>
+<p>CollectionView抽象类主要定义了视图操作，其子类KeySetView、ValueSetView、EntrySetView分别表示键视图、值视图、键值对视图。对视图均可以进行操作</p>
+<ol start="4">
+<li>Segment类</li>
+</ol>
+<p>Segment类在JDK1.8中与之前的版本的JDK作用存在很大的差别，JDK1.8下，其在普通的ConcurrentHashMap操作中已经没有失效，其在序列化与反序列化的时候会发挥作用  </p>
+<ol start="5">
+<li>CounterCell</li>
+</ol>
+<p>CounterCell类主要用于对baseCount的计数。</p>
+<h5 id="类的属性"><a href="#类的属性" class="headerlink" title="类的属性"></a>类的属性</h5><pre><code>public class ConcurrentHashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;
+    implements ConcurrentMap&lt;K,V&gt;, Serializable {
+    private static final long serialVersionUID = 7249069246763182397L;
+
+    //一些默认值
+    // 表的最大容量
+    private static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;
+    // 默认表的大小
+    private static final int DEFAULT_CAPACITY = 16;
+    // 最大数组大小
+    static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    // 默认并发数
+    private static final int DEFAULT_CONCURRENCY_LEVEL = 16;
+    // 装载因子
+    private static final float LOAD_FACTOR = 0.75f;
+    // 转化为红黑树的阈值
+    static final int TREEIFY_THRESHOLD = 8;
+    // 由红黑树转化为链表的阈值
+    static final int UNTREEIFY_THRESHOLD = 6;
+    // 转化为红黑树的表的最小容量
+    static final int MIN_TREEIFY_CAPACITY = 64;
+    // 每次进行转移的最小值
+    private static final int MIN_TRANSFER_STRIDE = 16;
+    // 生成sizeCtl所使用的bit位数
+    private static int RESIZE_STAMP_BITS = 16;
+    // 进行扩容所允许的最大线程数
+    private static final int MAX_RESIZERS = (1 &lt;&lt; (32 - RESIZE_STAMP_BITS)) - 1;
+    // 记录sizeCtl中的大小所需要进行的偏移位数
+    private static final int RESIZE_STAMP_SHIFT = 32 - RESIZE_STAMP_BITS;    
+    // 一系列的标识
+    static final int MOVED     = -1; // hash for forwarding nodes
+    static final int TREEBIN   = -2; // hash for roots of trees
+    static final int RESERVED  = -3; // hash for transient reservations
+    static final int HASH_BITS = 0x7fffffff; // usable bits of normal node hash
+    // 
+    /** Number of CPUS, to place bounds on some sizings */
+    // 获取可用的CPU个数
+    static final int NCPU = Runtime.getRuntime().availableProcessors();
+    // 
+    /** For serialization compatibility. */
+    // 进行序列化的属性
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField(&quot;segments&quot;, Segment[].class),
+        new ObjectStreamField(&quot;segmentMask&quot;, Integer.TYPE),
+        new ObjectStreamField(&quot;segmentShift&quot;, Integer.TYPE)
+    };
+
+
+
+    // 表
+    transient volatile Node&lt;K,V&gt;[] table;
+    // 下一个表
+    private transient volatile Node&lt;K,V&gt;[] nextTable;
+    //
+    /**
+     * Base counter value, used mainly when there is no contention,
+     * but also as a fallback during table initialization
+     * races. Updated via CAS.
+     */
+    // 基本计数
+    private transient volatile long baseCount;
+    //
+    /**
+     * Table initialization and resizing control.  When negative, the
+     * table is being initialized or resized: -1 for initialization,
+     * else -(1 + the number of active resizing threads).  Otherwise,
+     * when table is null, holds the initial table size to use upon
+     * creation, or 0 for default. After initialization, holds the
+     * next element count value upon which to resize the table.
+     */
+    // 对表初始化和扩容控制
+    private transient volatile int sizeCtl;
+
+    /**
+     * The next table index (plus one) to split while resizing.
+     */
+    // 扩容下另一个表的索引
+    private transient volatile int transferIndex;
+
+    /**
+     * Spinlock (locked via CAS) used when resizing and/or creating CounterCells.
+     */
+    // 旋转锁
+    private transient volatile int cellsBusy;
+
+    /**
+     * Table of counter cells. When non-null, size is a power of 2.
+     */
+    // counterCell表
+    private transient volatile CounterCell[] counterCells;
+
+    // views
+    // 视图
+    private transient KeySetView&lt;K,V&gt; keySet;
+    private transient ValuesView&lt;K,V&gt; values;
+    private transient EntrySetView&lt;K,V&gt; entrySet;
+
+    // Unsafe mechanics
+    private static final sun.misc.Unsafe U;
+    private static final long SIZECTL;
+    private static final long TRANSFERINDEX;
+    private static final long BASECOUNT;
+    private static final long CELLSBUSY;
+    private static final long CELLVALUE;
+    private static final long ABASE;
+    private static final int ASHIFT;
+
+    static {
+        try {
+            U = sun.misc.Unsafe.getUnsafe();
+            Class&lt;?&gt; k = ConcurrentHashMap.class;
+            SIZECTL = U.objectFieldOffset
+                (k.getDeclaredField(&quot;sizeCtl&quot;));
+            TRANSFERINDEX = U.objectFieldOffset
+                (k.getDeclaredField(&quot;transferIndex&quot;));
+            BASECOUNT = U.objectFieldOffset
+                (k.getDeclaredField(&quot;baseCount&quot;));
+            CELLSBUSY = U.objectFieldOffset
+                (k.getDeclaredField(&quot;cellsBusy&quot;));
+            Class&lt;?&gt; ck = CounterCell.class;
+            CELLVALUE = U.objectFieldOffset
+                (ck.getDeclaredField(&quot;value&quot;));
+            Class&lt;?&gt; ak = Node[].class;
+            ABASE = U.arrayBaseOffset(ak);
+            int scale = U.arrayIndexScale(ak);
+            if ((scale &amp; (scale - 1)) != 0)
+                throw new Error(&quot;data type scale not a power of two&quot;);
+            ASHIFT = 31 - Integer.numberOfLeadingZeros(scale);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
+}
+</code></pre><p>Unsafe实例，主要用于反射获取对象相应的字段。</p>
+<h5 id="类的构造函数"><a href="#类的构造函数" class="headerlink" title="类的构造函数"></a>类的构造函数</h5><pre><code>1.创建一个带有默认初始容量 (16)、加载因子 (0.75) 和 concurrencyLevel (16) 的新的空映射
+public ConcurrentHashMap() {
+}
+
+2.创建一个带有指定初始容量、默认加载因子 (0.75) 和 concurrencyLevel (16) 的新的空映射
+public ConcurrentHashMap(int initialCapacity) {
+    if (initialCapacity &lt; 0)
+        throw new IllegalArgumentException();
+    int cap = ((initialCapacity &gt;= (MAXIMUM_CAPACITY &gt;&gt;&gt; 1)) ?
+               MAXIMUM_CAPACITY :
+               tableSizeFor(initialCapacity + (initialCapacity &gt;&gt;&gt; 1) + 1));
+    this.sizeCtl = cap;
+}
+
+3.构造一个与给定映射具有相同映射关系的新映射
+public ConcurrentHashMap(Map&lt;? extends K, ? extends V&gt; m) {
+    this.sizeCtl = DEFAULT_CAPACITY;
+    putAll(m);
+}
+
+4.创建一个带有指定初始容量、加载因子和默认 concurrencyLevel (1) 的新的空映射。
+public ConcurrentHashMap(int initialCapacity, float loadFactor) {
+    this(initialCapacity, loadFactor, 1);
+}
+
+5.创建一个带有指定初始容量、加载因子和并发级别的新的空映射，会根据输入的initialCapacity的大小来
+确定一个最小的且大于等于initialCapacity大小的2的n次幂，如initialCapacity为15，则sizeCtl为16，
+若initialCapacity为16，则sizeCtl为16。若initialCapacity大小超过了允许的最大值，
+则sizeCtl为最大值。值得注意的是，构造函数中的concurrencyLevel参数已经在JDK1.8中的意义
+发生了很大的变化，其并不代表所允许的并发数，其只是用来确定sizeCtl大小，
+在JDK1.8中的并发控制都是针对具体的桶而言，即有多少个桶就可以允许多少个并发数
+public ConcurrentHashMap(int initialCapacity,
+                         float loadFactor, int concurrencyLevel) {
+    if (!(loadFactor &gt; 0.0f) || initialCapacity &lt; 0 || concurrencyLevel &lt;= 0)
+        throw new IllegalArgumentException();
+    if (initialCapacity &lt; concurrencyLevel)   // Use at least as many bins
+        initialCapacity = concurrencyLevel;   // as estimated threads
+    long size = (long)(1.0 + (long)initialCapacity / loadFactor);
+    int cap = (size &gt;= (long)MAXIMUM_CAPACITY) ?
+        MAXIMUM_CAPACITY : tableSizeFor((int)size);
+    this.sizeCtl = cap;
+}
+</code></pre><h5 id="核心函数"><a href="#核心函数" class="headerlink" title="核心函数"></a>核心函数</h5><pre><code>final V putVal(K key, V value, boolean onlyIfAbsent) {
+        if (key == null || value == null) throw new NullPointerException(); // 键或值为空，抛出异常
+        // 键的hash值经过计算获得hash值
+        int hash = spread(key.hashCode());
+        int binCount = 0;
+        for (Node&lt;K,V&gt;[] tab = table;;) { // 无限循环
+            Node&lt;K,V&gt; f; int n, i, fh;
+            if (tab == null || (n = tab.length) == 0) // 表为空或者表的长度为0
+                // 初始化表
+                tab = initTable();
+            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) { // 表不为空并且表的长度大于0，并且该桶不为空
+                if (casTabAt(tab, i, null,
+                             new Node&lt;K,V&gt;(hash, key, value, null))) // 比较并且交换值，如tab的第i项为空则用新生成的node替换
+                    break;                   // no lock when adding to empty bin
+            }
+            else if ((fh = f.hash) == MOVED) // 该结点的hash值为MOVED
+                // 进行结点的转移（在扩容的过程中）
+                tab = helpTransfer(tab, f);
+            else {
+                V oldVal = null;
+                synchronized (f) { // 加锁同步
+                    if (tabAt(tab, i) == f) { // 找到table表下标为i的节点
+                        if (fh &gt;= 0) { // 该table表中该结点的hash值大于0
+                            // binCount赋值为1
+                            binCount = 1;
+                            for (Node&lt;K,V&gt; e = f;; ++binCount) { // 无限循环
+                                K ek;
+                                if (e.hash == hash &amp;&amp;
+                                    ((ek = e.key) == key ||
+                                     (ek != null &amp;&amp; key.equals(ek)))) { // 结点的hash值相等并且key也相等
+                                    // 保存该结点的val值
+                                    oldVal = e.val;
+                                    if (!onlyIfAbsent) // 进行判断
+                                        // 将指定的value保存至结点，即进行了结点值的更新
+                                        e.val = value;
+                                    break;
+                                }
+                                // 保存当前结点
+                                Node&lt;K,V&gt; pred = e;
+                                if ((e = e.next) == null) { // 当前结点的下一个结点为空，即为最后一个结点
+                                    // 新生一个结点并且赋值给next域
+                                    pred.next = new Node&lt;K,V&gt;(hash, key,
+                                                              value, null);
+                                    // 退出循环
+                                    break;
+                                }
+                            }
+                        }
+                        else if (f instanceof TreeBin) { // 结点为红黑树结点类型
+                            Node&lt;K,V&gt; p;
+                            // binCount赋值为2
+                            binCount = 2;
+                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
+                                                           value)) != null) { // 将hash、key、value放入红黑树
+                                // 保存结点的val
+                                oldVal = p.val;
+                                if (!onlyIfAbsent) // 判断
+                                    // 赋值结点value值
+                                    p.val = value;
+                            }
+                        }
+                    }
+                }
+                if (binCount != 0) { // binCount不为0
+                    if (binCount &gt;= TREEIFY_THRESHOLD) // 如果binCount大于等于转化为红黑树的阈值
+                        // 进行转化
+                        treeifyBin(tab, i);
+                    if (oldVal != null) // 旧值不为空
+                        // 返回旧值
+                        return oldVal;
+                    break;
+                }
+            }
+        }
+        // 增加binCount的数量
+        addCount(1L, binCount);
+        return null;
+    }
+</code></pre><p>说明：put函数底层调用了putVal进行数据的插入，对于putVal函数的流程大体如下。</p>
+<p>　　① 判断存储的key、value是否为空，若为空，则抛出异常，否则，进入步骤②</p>
+<p>　　② 计算key的hash值，随后进入无限循环，该无限循环可以确保成功插入数据，若table表为空或者长度为0，则初始化table表，否则，进入步骤③</p>
+<p>　　③ 根据key的hash值取出table表中的结点元素，若取出的结点为空（该桶为空），则使用CAS将key、value、hash值生成的结点放入桶中。否则，进入步骤④</p>
+<p>　　④ 若该结点的的hash值为MOVED，则对该桶中的结点进行转移，否则，进入步骤⑤</p>
+<p>　　⑤ 对桶中的第一个结点（即table表中的结点）进行加锁，对该桶进行遍历，桶中的结点的hash值与key值与给定的hash值和key值相等，则根据标识选择是否进行更新操作（用给定的value值替换该结点的value值），若遍历完桶仍没有找到hash值与key值和指定的hash值与key值相等的结点，则直接新生一个结点并赋值为之前最后一个结点的下一个结点。进入步骤⑥</p>
+<p>　　⑥ 若binCount值达到红黑树转化的阈值，则将桶中的结构转化为红黑树存储，最后，增加binCount的值。</p>
+<p>　　在putVal函数中会涉及到如下几个函数：initTable、tabAt、casTabAt、helpTransfer、putTreeVal、treeifyBin、addCount函数。下面对其中涉及到的函数进行分析</p>
+<pre><code>private final Node&lt;K,V&gt;[] initTable() {
+        Node&lt;K,V&gt;[] tab; int sc;
+        while ((tab = table) == null || tab.length == 0) { // 无限循环
+            if ((sc = sizeCtl) &lt; 0) // sizeCtl小于0，则进行线程让步等待
+                Thread.yield(); // lost initialization race; just spin
+            else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) { // 比较sizeCtl的值与sc是否相等，相等则用-1替换
+                try {
+                    if ((tab = table) == null || tab.length == 0) { // table表为空或者大小为0
+                        // sc的值是否大于0，若是，则n为sc，否则，n为默认初始容量
+                        int n = (sc &gt; 0) ? sc : DEFAULT_CAPACITY;
+                        @SuppressWarnings(&quot;unchecked&quot;)
+                        // 新生结点数组
+                        Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])new Node&lt;?,?&gt;[n];
+                        // 赋值给table
+                        table = tab = nt;
+                        // sc为n * 3/4
+                        sc = n - (n &gt;&gt;&gt; 2);
+                    }
+                } finally {
+                    // 设置sizeCtl的值
+                    sizeCtl = sc;
+                }
+                break;
+            }
+        }
+        // 返回table表
+        return tab;
+    }
+    对于table的大小，会根据sizeCtl的值进行设置，如果没有设置szieCtl的值，那么默认生成的table大小为16，否则，会根据sizeCtl的大小设置table大小
+
+static final &lt;K,V&gt; Node&lt;K,V&gt; tabAt(Node&lt;K,V&gt;[] tab, int i) {
+    return (Node&lt;K,V&gt;)U.getObjectVolatile(tab, ((long)i &lt;&lt; ASHIFT) + ABASE);
+}
+此函数返回table数组中下标为i的结点，可以看到是通过Unsafe对象通过反射获取的，getObjectVolatile的第二项参数为下标为i的偏移地址
+
+static final &lt;K,V&gt; boolean casTabAt(Node&lt;K,V&gt;[] tab, int i,
+                                    Node&lt;K,V&gt; c, Node&lt;K,V&gt; v) {
+    return U.compareAndSwapObject(tab, ((long)i &lt;&lt; ASHIFT) + ABASE, c, v);
+}
+此函数用于比较table数组下标为i的结点是否为c，若为c，则用v交换操作。否则，不进行交换操作
+
+final Node&lt;K,V&gt;[] helpTransfer(Node&lt;K,V&gt;[] tab, Node&lt;K,V&gt; f) {
+    Node&lt;K,V&gt;[] nextTab; int sc;
+    if (tab != null &amp;&amp; (f instanceof ForwardingNode) &amp;&amp;
+        (nextTab = ((ForwardingNode&lt;K,V&gt;)f).nextTable) != null) { // table表不为空并且结点类型使ForwardingNode类型，并且结点的nextTable不为空
+        int rs = resizeStamp(tab.length);
+        while (nextTab == nextTable &amp;&amp; table == tab &amp;&amp;
+               (sc = sizeCtl) &lt; 0) { // 条件判断
+            if ((sc &gt;&gt;&gt; RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                sc == rs + MAX_RESIZERS || transferIndex &lt;= 0) // 
+                break;
+            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) { // 比较并交换
+                // 将table的结点转移到nextTab中
+                transfer(tab, nextTab);
+                break;
+            }
+        }
+        return nextTab;
+    }
+    return table;
+}
+此函数用于在扩容时将table表中的结点转移到nextTable中。
+
+final TreeNode&lt;K,V&gt; putTreeVal(int h, K k, V v) {
+        Class&lt;?&gt; kc = null;
+        boolean searched = false;
+        for (TreeNode&lt;K,V&gt; p = root;;) {
+            int dir, ph; K pk;
+            if (p == null) {
+                first = root = new TreeNode&lt;K,V&gt;(h, k, v, null, null);
+                break;
+            }
+            else if ((ph = p.hash) &gt; h)
+                dir = -1;
+            else if (ph &lt; h)
+                dir = 1;
+            else if ((pk = p.key) == k || (pk != null &amp;&amp; k.equals(pk)))
+                return p;
+            else if ((kc == null &amp;&amp;
+                      (kc = comparableClassFor(k)) == null) ||
+                     (dir = compareComparables(kc, k, pk)) == 0) {
+                if (!searched) {
+                    TreeNode&lt;K,V&gt; q, ch;
+                    searched = true;
+                    if (((ch = p.left) != null &amp;&amp;
+                         (q = ch.findTreeNode(h, k, kc)) != null) ||
+                        ((ch = p.right) != null &amp;&amp;
+                         (q = ch.findTreeNode(h, k, kc)) != null))
+                        return q;
+                }
+                dir = tieBreakOrder(k, pk);
+            }
+
+            TreeNode&lt;K,V&gt; xp = p;
+            if ((p = (dir &lt;= 0) ? p.left : p.right) == null) {
+                TreeNode&lt;K,V&gt; x, f = first;
+                first = x = new TreeNode&lt;K,V&gt;(h, k, v, f, xp);
+                if (f != null)
+                    f.prev = x;
+                if (dir &lt;= 0)
+                    xp.left = x;
+                else
+                    xp.right = x;
+                if (!xp.red)
+                    x.red = true;
+                else {
+                    lockRoot();
+                    try {
+                        root = balanceInsertion(root, x);
+                    } finally {
+                        unlockRoot();
+                    }
+                }
+                break;
+            }
+        }
+        assert checkInvariants(root);
+        return null;
+    }
+    此函数用于将指定的hash、key、value值添加到红黑树中，若已经添加了，则返回null，否则返回该结点
+
+private final void treeifyBin(Node&lt;K,V&gt;[] tab, int index) {
+    Node&lt;K,V&gt; b; int n, sc;
+    if (tab != null) { // 表不为空
+        if ((n = tab.length) &lt; MIN_TREEIFY_CAPACITY) // table表的长度小于最小的长度
+            // 进行扩容，调整某个桶中结点数量过多的问题（由于某个桶中结点数量超出了阈值，则触发treeifyBin）
+            tryPresize(n &lt;&lt; 1);
+        else if ((b = tabAt(tab, index)) != null &amp;&amp; b.hash &gt;= 0) { // 桶中存在结点并且结点的hash值大于等于0
+            synchronized (b) { // 对桶中第一个结点进行加锁
+                if (tabAt(tab, index) == b) { // 第一个结点没有变化
+                    TreeNode&lt;K,V&gt; hd = null, tl = null;
+                    for (Node&lt;K,V&gt; e = b; e != null; e = e.next) { // 遍历桶中所有结点
+                        // 新生一个TreeNode结点
+                        TreeNode&lt;K,V&gt; p =
+                            new TreeNode&lt;K,V&gt;(e.hash, e.key, e.val,
+                                              null, null);
+                        if ((p.prev = tl) == null) // 该结点前驱为空
+                            // 设置p为头结点
+                            hd = p;
+                        else
+                            // 尾节点的next域赋值为p
+                            tl.next = p;
+                        // 尾节点赋值为p
+                        tl = p;
+                    }
+                    // 设置table表中下标为index的值为hd
+                    setTabAt(tab, index, new TreeBin&lt;K,V&gt;(hd));
+                }
+            }
+        }
+    }
+}
+此函数用于将桶中的数据结构转化为红黑树，其中，值得注意的是，当table的长度未达到阈值时，会进行一次扩容操作，该操作会使得触发treeifyBin操作的某个桶中的所有元素进行一次重新分配，这样可以避免某个桶中的结点数量太大
+
+private final void addCount(long x, int check) {
+    CounterCell[] as; long b, s;
+    if ((as = counterCells) != null ||
+        !U.compareAndSwapLong(this, BASECOUNT, b = baseCount, s = b + x)) { // counterCells不为空或者比较交换失败
+        CounterCell a; long v; int m;
+        // 无竞争标识
+        boolean uncontended = true;
+        if (as == null || (m = as.length - 1) &lt; 0 ||
+            (a = as[ThreadLocalRandom.getProbe() &amp; m]) == null ||
+            !(uncontended =
+              U.compareAndSwapLong(a, CELLVALUE, v = a.value, v + x))) { // 
+            fullAddCount(x, uncontended);
+            return;
+        }
+        if (check &lt;= 1)
+            return;
+        s = sumCount();
+    }
+    if (check &gt;= 0) {
+        Node&lt;K,V&gt;[] tab, nt; int n, sc;
+        while (s &gt;= (long)(sc = sizeCtl) &amp;&amp; (tab = table) != null &amp;&amp;
+               (n = tab.length) &lt; MAXIMUM_CAPACITY) {
+            int rs = resizeStamp(n);
+            if (sc &lt; 0) {
+                if ((sc &gt;&gt;&gt; RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                    sc == rs + MAX_RESIZERS || (nt = nextTable) == null ||
+                    transferIndex &lt;= 0)
+                    break;
+                if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1))
+                    transfer(tab, nt);
+            }
+            else if (U.compareAndSwapInt(this, SIZECTL, sc,
+                                         (rs &lt;&lt; RESIZE_STAMP_SHIFT) + 2))
+                transfer(tab, null);
+            s = sumCount();
+        }
+    }
+}
+
+此函数主要完成binCount的值加1的操作
+
+
+public V get(Object key) {
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; e, p; int n, eh; K ek;
+    // 计算key的hash值
+    int h = spread(key.hashCode()); 
+    if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;
+        (e = tabAt(tab, (n - 1) &amp; h)) != null) { // 表不为空并且表的长度大于0并且key所在的桶不为空
+        if ((eh = e.hash) == h) { // 表中的元素的hash值与key的hash值相等
+            if ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek))) // 键相等
+                // 返回值
+                return e.val;
+        }
+        else if (eh &lt; 0) // 结点hash值小于0
+            // 在桶（链表/红黑树）中查找
+            return (p = e.find(h, key)) != null ? p.val : null;
+        while ((e = e.next) != null) { // 对于结点hash值大于0的情况
+            if (e.hash == h &amp;&amp;
+                ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek))))
+                return e.val;
+        }
+    }
+    return null;
+}
+
+get函数根据key的hash值来计算在哪个桶中，再遍历桶，查找元素，若找到则返回该结点，否则，返回null。
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/20/hashmap源码分析/" rel="next" title="hashmap源码分析">
+                <i class="fa fa-chevron-left"></i> hashmap源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/23/开始/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Daftar Isi
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Ikhtisar
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">jyzhangbo</p>
+              <p class="site-description motion-element" itemprop="description">我的博客我做主</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">posting</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#类的继承关系"><span class="nav-number">2.0.1.</span> <span class="nav-text">类的继承关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内部类"><span class="nav-number">2.0.2.</span> <span class="nav-text">内部类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类的属性"><span class="nav-number">2.0.3.</span> <span class="nav-text">类的属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类的构造函数"><span class="nav-number">2.0.4.</span> <span class="nav-text">类的构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#核心函数"><span class="nav-number">2.0.5.</span> <span class="nav-text">核心函数</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jyzhangbo</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Tema &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

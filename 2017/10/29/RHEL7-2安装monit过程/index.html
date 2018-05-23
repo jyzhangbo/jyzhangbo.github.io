@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近需要在现场的服务器上部署一个java项目，为了防止项目的停止，就在服务器上安装了一个monit，但是又怕停电了，还需要把monit设置为开机自启，流程看起来很简单，但是在实际的操作中确实遇到了各种各样的问题。特地记录下来，防止以后还会遇到这样的问题。另外有安装了一个teamviewer防止出现特殊情况。 前提条件 系统 red hat enterprise linux 7.2 软件monit-">
+<meta name="keywords" content="Linux,monit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RHEL7.2安装monit过程">
+<meta property="og:url" content="http://jyzhangbo.cn/2017/10/29/RHEL7-2安装monit过程/index.html">
+<meta property="og:site_name" content="jyzhangbo的博客">
+<meta property="og:description" content="最近需要在现场的服务器上部署一个java项目，为了防止项目的停止，就在服务器上安装了一个monit，但是又怕停电了，还需要把monit设置为开机自启，流程看起来很简单，但是在实际的操作中确实遇到了各种各样的问题。特地记录下来，防止以后还会遇到这样的问题。另外有安装了一个teamviewer防止出现特殊情况。 前提条件 系统 red hat enterprise linux 7.2 软件monit-">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://jyzhangbo.cn/img/yum包.jpg">
+<meta property="og:updated_time" content="2018-05-23T04:00:56.238Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RHEL7.2安装monit过程">
+<meta name="twitter:description" content="最近需要在现场的服务器上部署一个java项目，为了防止项目的停止，就在服务器上安装了一个monit，但是又怕停电了，还需要把monit设置为开机自启，流程看起来很简单，但是在实际的操作中确实遇到了各种各样的问题。特地记录下来，防止以后还会遇到这样的问题。另外有安装了一个teamviewer防止出现特殊情况。 前提条件 系统 red hat enterprise linux 7.2 软件monit-">
+<meta name="twitter:image" content="http://jyzhangbo.cn/img/yum包.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jyzhangbo.cn/2017/10/29/RHEL7-2安装monit过程/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RHEL7.2安装monit过程 | jyzhangbo的博客</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jyzhangbo的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">没有什么是不能完成的</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Beranda</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Arsip</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2017/10/29/RHEL7-2安装monit过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="jyzhangbo">
+      <meta itemprop="description" content="我的博客我做主">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jyzhangbo的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RHEL7.2安装monit过程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Diposting di</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2017-10-29 12:16:05" itemprop="dateCreated datePublished" datetime="2017-10-29T12:16:05+08:00">2017-10-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2018-05-23 12:00:56" itemprop="dateModified" datetime="2018-05-23T12:00:56+08:00">2018-05-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近需要在现场的服务器上部署一个java项目，为了防止项目的停止，就在服务器上安装了一个monit，但是又怕停电了，还需要把monit设置为开机自启，流程看起来很简单，但是在实际的操作中确实遇到了各种各样的问题。特地记录下来，防止以后还会遇到这样的问题。另外有安装了一个teamviewer防止出现特殊情况。</p>
+<h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><ul>
+<li>系统 red hat enterprise linux 7.2</li>
+<li>软件monit-5.23.0</li>
+<li>软件teamviewer_12.0.85001.i686.rpm</li>
+</ul>
+<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><h5 id="修改yum源"><a href="#修改yum源" class="headerlink" title="修改yum源"></a>修改yum源</h5><p>由于 redhat的yum在线更新是收费的，如果没有注册的话不能使用，如果要使用，需将redhat的yum卸载后，重启安装，再配置其他源</p>
+<ol>
+<li>卸载redhat自带的yum<blockquote>
+<p>rpm -qa | grep yum | xargs rpm -e –nodeps</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>xargs是一条Unix和类Unix操作系统的常用命令。它的作用是将参数列表转换成小块分段传递给其他命令，以避免参数列表过长的问题</li>
+<li>–nodeps 强制卸载，不管依赖性</li>
+</ul>
+<ol start="2">
+<li>下载yum需要的rpm包<br>我这里使用的163的，网址<a href="http://mirrors.163.com/centos/7/os/x86_64/Packages/，" target="_blank" rel="noopener">http://mirrors.163.com/centos/7/os/x86_64/Packages/，</a><br>在这个目录下找到需要的rpm包,下载后上传到服务器上<br><img src="/img/yum包.jpg" alt="yum包列表"></li>
+</ol>
+<a id="more"></a>
+<ol start="3">
+<li>安装<br>切换到相应的目录执行：<blockquote>
+<p>rpm -ivh –force –nodeps *.rpm</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>–force强制安装</li>
+<li>–nodeps忽略所有依赖关系和文件问题</li>
+</ul>
+<ol start="4">
+<li>下载对应的repo文件并修改<br>进入到目录：<blockquote>
+<p>cd /etc/yum.repos.d/</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>wget <a href="http://mirrors.163.com/.help/CentOS7-Base-163.repo" target="_blank" rel="noopener">http://mirrors.163.com/.help/CentOS7-Base-163.repo</a></p>
+</blockquote>
+<p>编辑CentOS7-Base-163.repo文件，将其中的$releasever更改为centos的版本号7</p>
+<ol start="5">
+<li>yum clean all清除原有缓存</li>
+<li>yum makecache 获取yum列表</li>
+</ol>
+<p>至此yum源切换完毕，可以使用yum命令安装下面的一些依赖软件，需要注意的地方就是在安装rpm包的时候，一定要忽略所有依赖，要不然总是提醒缺少依赖包</p>
+<h5 id="安装monit"><a href="#安装monit" class="headerlink" title="安装monit"></a>安装monit</h5><ol>
+<li>下载安装包，并上传至服务器，解压<br>tar -zxvf monit-5.23.0.tar.gz</li>
+<li>进入monit目录后，执行./configure</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">问题1：no acceptable C compiler found in $PATH</span><br><span class="line">解决: yum -y install gcc</span><br><span class="line"></span><br><span class="line">问题2：error: libz not found</span><br><span class="line">解决：yum install zlib-devel</span><br><span class="line"></span><br><span class="line">问题3：error: PAM enabled but headers or library not found</span><br><span class="line">解决：yum install pam-devel</span><br><span class="line"></span><br><span class="line">问题4： Couldn&apos;t find your SSL header files.</span><br><span class="line">            Use --with-ssl-incl-dir option to fix this problem or disable</span><br><span class="line">            the SSL support with --without-ssl</span><br><span class="line">解决：./configure --without-ssl</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>执行make</li>
+<li>执行make install</li>
+<li>执行cp monitrc /etc 将配置文件移到etc目录下<blockquote>
+<p>注意/etc/monitrc这个文件的访问权限不能大于0700,所以可能还需要修改它的访问权限:<br>chmod 600 /etc/monitrc </p>
+</blockquote>
+</li>
+<li>修改配置文件vi /etc/monitrc</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">set daemon  30 </span><br><span class="line">set log /home/soft/log/monit.log</span><br><span class="line">set httpd port 2812 and</span><br><span class="line">    allow admin:monit</span><br><span class="line">check process smartpv-high-client matching &quot;java&quot;</span><br><span class="line">  start program = &quot;/home/zhangbo/start.sh&quot;</span><br><span class="line">  stop program = &quot;/home/zhangbo/stop.sh&quot;</span><br><span class="line">  if failed port 8080 type tcp for 10 cycles then exec &quot;/home/soft/monit-5.23.0/monit quit&quot;</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>修改start.sh，stop.sh和jar包的执行权限<blockquote>
+<p>chmod 755 *.sh</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>chmod 755 *.jar</p>
+</blockquote>
+<ol start="8">
+<li>启动monit就可以对java程序进行监控了<br>命令：<blockquote>
+<p>/usr/local/bin/monit</p>
+</blockquote>
+</li>
+</ol>
+<h5 id="设置monit开机启动"><a href="#设置monit开机启动" class="headerlink" title="设置monit开机启动"></a>设置monit开机启动</h5><ol>
+<li>修改文件/etc/rc.d/rc.local<br>在末尾添加：/usr/local/bin/monit</li>
+<li>修改文件的执行权限（此步骤不执行，则rc.local不起作用）<br>chmod +x rc.local</li>
+</ol>
+<p>至此，使用reboot命令让机器重启，查看日志，发现monit启动了，但是java程序一直不能启动，报错：</p>
+<blockquote>
+<p>nohup: 无法运行命令”java”: 没有那个文件或目录</p>
+</blockquote>
+<p>经过一天的查看研究，终于找到了问题的原因，是因为我启动java的程序的start.sh脚本中没有使环境变量策略生效，添加上source /etc/profile即可解决问题。经过分析应该是因为系统自动执行的不在当前shell环境下，不加载任何环境变量，因此需要添加上环境变量，另外需要特别注意的是路径都要使用绝对路径。</p>
+<h5 id="安装teamviewer"><a href="#安装teamviewer" class="headerlink" title="安装teamviewer"></a>安装teamviewer</h5><ol>
+<li>下载安装包teamviewer_12.0.85001.i686.rpm</li>
+<li>安装命令：<blockquote>
+<p>yum install teamviewer_12.0.85001.i686.rpm</p>
+</blockquote>
+</li>
+<li>安装完后teamviewer默认是启动的，这个时候先把它关了<blockquote>
+<p>teamviewer –daemon stop</p>
+</blockquote>
+</li>
+<li>修改配置文件， 在文件/opt/teamviewer/config/global.conf末尾增加以下内容（由于只读限制，所以可能需要用到管理员权限） </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[int32] EulaAccepted = 1 </span><br><span class="line">[int32] EulaAcceptedRevision = 6</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>重启服务：<blockquote>
+<p>teamviewer –daemon start</p>
+</blockquote>
+</li>
+<li>设置密码：<blockquote>
+<p>teamviewer –passwd [new password]</p>
+</blockquote>
+</li>
+<li>重启服务后才能看到id</li>
+<li>查看id<blockquote>
+<p>teamviewer –info</p>
+</blockquote>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/monit/" rel="tag"># monit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/19/java线程池的使用/" rel="next" title="java线程池的使用">
+                <i class="fa fa-chevron-left"></i> java线程池的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/01/socket编程/" rel="prev" title="socket编程">
+                socket编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Daftar Isi
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Ikhtisar
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">jyzhangbo</p>
+              <p class="site-description motion-element" itemprop="description">我的博客我做主</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">posting</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前提条件"><span class="nav-number">1.</span> <span class="nav-text">前提条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装步骤"><span class="nav-number">2.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#修改yum源"><span class="nav-number">2.0.1.</span> <span class="nav-text">修改yum源</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装monit"><span class="nav-number">2.0.2.</span> <span class="nav-text">安装monit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#设置monit开机启动"><span class="nav-number">2.0.3.</span> <span class="nav-text">设置monit开机启动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装teamviewer"><span class="nav-number">2.0.4.</span> <span class="nav-text">安装teamviewer</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jyzhangbo</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Tema &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

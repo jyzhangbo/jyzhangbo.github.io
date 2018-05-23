@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一、单机版的安装1. 上官网 下载软件包2.1 elasticsearch安装1. 解压安装包，创建elsearch用户组及elsearch用户 groupadd elsearchuseradd elsearch -g elsearch -p elasticsearch  2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch chown-Relse">
+<meta name="keywords" content="ELK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ELK环境搭建">
+<meta property="og:url" content="http://jyzhangbo.cn/2017/10/10/ELK环境搭建/index.html">
+<meta property="og:site_name" content="jyzhangbo的博客">
+<meta property="og:description" content="一、单机版的安装1. 上官网 下载软件包2.1 elasticsearch安装1. 解压安装包，创建elsearch用户组及elsearch用户 groupadd elsearchuseradd elsearch -g elsearch -p elasticsearch  2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch chown-Relse">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-05-23T04:00:56.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ELK环境搭建">
+<meta name="twitter:description" content="一、单机版的安装1. 上官网 下载软件包2.1 elasticsearch安装1. 解压安装包，创建elsearch用户组及elsearch用户 groupadd elsearchuseradd elsearch -g elsearch -p elasticsearch  2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch chown-Relse">
+
+
+
+
+
+
+  <link rel="canonical" href="http://jyzhangbo.cn/2017/10/10/ELK环境搭建/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ELK环境搭建 | jyzhangbo的博客</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jyzhangbo的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">没有什么是不能完成的</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Beranda</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Arsip</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2017/10/10/ELK环境搭建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="jyzhangbo">
+      <meta itemprop="description" content="我的博客我做主">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jyzhangbo的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ELK环境搭建
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Diposting di</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2017-10-10 11:26:45" itemprop="dateCreated datePublished" datetime="2017-10-10T11:26:45+08:00">2017-10-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2018-05-23 12:00:56" itemprop="dateModified" datetime="2018-05-23T12:00:56+08:00">2018-05-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、单机版的安装"><a href="#一、单机版的安装" class="headerlink" title="一、单机版的安装"></a>一、单机版的安装</h1><h2 id="1-上官网-下载软件包"><a href="#1-上官网-下载软件包" class="headerlink" title="1. 上官网 下载软件包"></a>1. 上<a href="https://www.elastic.co/cn/products" target="_blank" rel="noopener">官网</a> 下载软件包</h2><h2 id="2-1-elasticsearch安装"><a href="#2-1-elasticsearch安装" class="headerlink" title="2.1 elasticsearch安装"></a>2.1 elasticsearch安装</h2><h4 id="1-解压安装包，创建elsearch用户组及elsearch用户"><a href="#1-解压安装包，创建elsearch用户组及elsearch用户" class="headerlink" title="1. 解压安装包，创建elsearch用户组及elsearch用户"></a>1. 解压安装包，创建elsearch用户组及elsearch用户</h4><blockquote>
+<p>groupadd elsearch<br>useradd elsearch -g elsearch -p elasticsearch</p>
+</blockquote>
+<h4 id="2-更改elasticsearch文件夹及内部文件的所属用户及组为elsearch-elsearch"><a href="#2-更改elasticsearch文件夹及内部文件的所属用户及组为elsearch-elsearch" class="headerlink" title="2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch"></a>2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch</h4><blockquote>
+<p>chown-Relsearch:elsearchelasticsearch</p>
+</blockquote>
+<p>elasticsearch为你elasticsearch的目录名称</p>
+<h4 id="3-切换到elsearch用户再启动"><a href="#3-切换到elsearch用户再启动" class="headerlink" title="3. 切换到elsearch用户再启动"></a>3. 切换到elsearch用户再启动</h4><p> <code>su elsearch #切换账户cd elasticsearch/bin #进入你的elasticsearch目录下的bin目录
+./elasticsearch</code></p>
+<h4 id="4-后台启动-elasticsearch-d"><a href="#4-后台启动-elasticsearch-d" class="headerlink" title="4. 后台启动./elasticsearch -d"></a>4. 后台启动./elasticsearch -d</h4><a id="more"></a>
+<h2 id="2-2-遇到的问题以及解决方案"><a href="#2-2-遇到的问题以及解决方案" class="headerlink" title="2.2 遇到的问题以及解决方案"></a>2.2 遇到的问题以及解决方案</h2><pre><code>1.ERROR: bootstrap checks failed
+            max file descriptors [4096] for elasticsearch process likely too low, increase to at least [65536]
+            max number of threads [1024] for user [lishang] likely too low, increase to at least [2048]
+
+解决：切换到root用户，编辑limits.conf 添加类似如下内容
+
+    vi /etc/security/limits.conf 
+    添加如下内容:
+    * soft nofile 65536
+    * hard nofile 131072
+    * soft nproc 2048
+    * hard nproc 4096
+
+2.问题：max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]
+解决：切换到root用户修改配置sysctl.conf
+    vi /etc/sysctl.conf 
+    添加下面配置：
+    vm.max_map_count=655360
+    并执行命令：
+    sysctl -p
+</code></pre><h2 id="3-logstash安装"><a href="#3-logstash安装" class="headerlink" title="3. logstash安装"></a>3. logstash安装</h2><ol>
+<li>下载安装包</li>
+<li>解压 tar -zxvf elasticsearch-5.6.1.tar.gz</li>
+<li>运行bin/logstash -e’input { stdin { } } output { stdout {} }’</li>
+<li>运行bin/logstash -e’input { stdin { } } output { stdout { codec =&gt; rubydebug } }’</li>
+<li>添加配置文件config/logstash.conf<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">input&#123;</span><br><span class="line"> beats &#123;</span><br><span class="line">   port =&gt; "5044"</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output&#123;</span><br><span class="line"> elasticsearch &#123;hosts =&gt; "zk02" &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果内存小的话，修改配置文件jvm.options中的-Xms和-Xmx</p>
+<ol start="6">
+<li>运行bin/logstash -f config/logstash.conf</li>
+<li>后台运行nohup bin/logstash -f config/logstash.conf &amp;</li>
+</ol>
+<h2 id="4-kibana安装"><a href="#4-kibana安装" class="headerlink" title="4. kibana安装"></a>4. kibana安装</h2><ol start="8">
+<li>下载安装包</li>
+<li>解压tar -zxvf kibana-5.6.1-linux-x86_64.tar.gz</li>
+<li>修改config/kibana.yml</li>
+<li>运行bin/kibana</li>
+<li>后台运行 nohup bin/kibana &amp;</li>
+</ol>
+<h2 id="5-filebeat安装"><a href="#5-filebeat安装" class="headerlink" title="5. filebeat安装"></a>5. filebeat安装</h2><ol start="13">
+<li>下载安装包</li>
+<li>解压</li>
+<li><p>修改配置文件filebeat.yml</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">filebeat.prospectors:</span><br><span class="line">- input_type: log</span><br><span class="line">    paths:</span><br><span class="line">    - /home/soft/storm/logs/workers-artifacts/stormTopo<span class="number">-2</span><span class="number">-1506050553</span>/<span class="number">6700</span>/worker.log</span><br><span class="line">    - /home/soft/storm/logs/workers-artifacts/stormTopo<span class="number">-2</span><span class="number">-1506050553</span>/<span class="number">6701</span>/worker.log</span><br><span class="line">    - /home/soft/storm/logs/workers-artifacts/stormTopo<span class="number">-2</span><span class="number">-1506050553</span>/<span class="number">6702</span>/worker.log</span><br><span class="line">    document_type: se-storm</span><br><span class="line">    scan_frequency: <span class="number">10</span>s</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动<br><code>nohup ./filebeat -e -c filebeat.yml &amp;</code></p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ELK/" rel="tag"># ELK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/10/storm是什么/" rel="prev" title="storm是什么">
+                storm是什么 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Daftar Isi
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Ikhtisar
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">jyzhangbo</p>
+              <p class="site-description motion-element" itemprop="description">我的博客我做主</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">posting</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、单机版的安装"><span class="nav-number">1.</span> <span class="nav-text">一、单机版的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-上官网-下载软件包"><span class="nav-number">1.1.</span> <span class="nav-text">1. 上官网 下载软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-elasticsearch安装"><span class="nav-number">1.2.</span> <span class="nav-text">2.1 elasticsearch安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-解压安装包，创建elsearch用户组及elsearch用户"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">1. 解压安装包，创建elsearch用户组及elsearch用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-更改elasticsearch文件夹及内部文件的所属用户及组为elsearch-elsearch"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-切换到elsearch用户再启动"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">3. 切换到elsearch用户再启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-后台启动-elasticsearch-d"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">4. 后台启动./elasticsearch -d</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-遇到的问题以及解决方案"><span class="nav-number">1.3.</span> <span class="nav-text">2.2 遇到的问题以及解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-logstash安装"><span class="nav-number">1.4.</span> <span class="nav-text">3. logstash安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-kibana安装"><span class="nav-number">1.5.</span> <span class="nav-text">4. kibana安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-filebeat安装"><span class="nav-number">1.6.</span> <span class="nav-text">5. filebeat安装</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jyzhangbo</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Tema &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
