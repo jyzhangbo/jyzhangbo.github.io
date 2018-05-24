@@ -126,7 +126,7 @@
 <meta property="og:image" content="http://jyzhangbo.cn/img/tuple_tree.png">
 <meta property="og:image" content="http://jyzhangbo.cn/img/tuple-dag.png">
 <meta property="og:image" content="http://jyzhangbo.cn/img/ack_tree.png">
-<meta property="og:updated_time" content="2018-05-24T02:55:41.862Z">
+<meta property="og:updated_time" content="2018-05-24T03:11:52.386Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="storm消息的可靠性(官方)">
 <meta name="twitter:description" content="Storm 能够保证每一个由 Spout 发送的消息都能够得到完整地处理。本文详细解释了 Storm 如何实现这种保障机制，以及作为用户如何使用好 Storm 的可靠性机制。 消息的“完整性处理”是什么意思一个从 spout 中发送出的 tuple 会产生上千个基于它创建的 tuples。例如，有这样一个 word-count 拓扑： TopologyBuilder builder =newTop">
@@ -389,7 +389,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:41" itemprop="dateModified" datetime="2018-05-24T10:55:41+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:11:52" itemprop="dateModified" datetime="2018-05-24T11:11:52+08:00">2018-05-24</time>
               
             
           </span>
@@ -451,9 +451,9 @@ builder.setBolt(&quot;split&quot;, newSplitSentence(), 10)
         .shuffleGrouping(&quot;sentences&quot;);
 builder.setBolt(&quot;count&quot;, newWordCount(), 20)
         .fieldsGrouping(&quot;split&quot;, newFields(&quot;word&quot;));
-</code></pre><p>这个拓扑从一个 Kestrel 队列中读取句子，然后将句子分解成若干个单词，然后将它每个单词和该单词的数量发送出去。这种情况下，从 spout 中发出的 tuple 就会产生很多基于它创建的新 tuple：包括句子中单词的 tuple 和 每个单词的个数的 tuple。这些消息构成了这样一棵树：<br><img src="/img/tuple_tree.png" alt="tuple树"></p>
+</code></pre><a id="more"></a>
+<p>这个拓扑从一个 Kestrel 队列中读取句子，然后将句子分解成若干个单词，然后将它每个单词和该单词的数量发送出去。这种情况下，从 spout 中发出的 tuple 就会产生很多基于它创建的新 tuple：包括句子中单词的 tuple 和 每个单词的个数的 tuple。这些消息构成了这样一棵树：<br><img src="/img/tuple_tree.png" alt="tuple树"></p>
 <p>如果这棵 tuple 树发送完成，并且树中的每一条消息都得到了正确的处理，就表明发送 tuple 的 spout 已经得到了“完整性处理”。对应的，如果在指定的超时时间内 tuple 树中有消息没有完成处理就意味着这个 tuple 失败了。这个超时时间可以使用 Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS 参数在构造拓扑时进行配置，如果不配置，则默认时间为 30 秒。</p>
-<a id="more"></a>
 <h3 id="在消息得到完整性处理后或者处理失败后会发生什么"><a href="#在消息得到完整性处理后或者处理失败后会发生什么" class="headerlink" title="在消息得到完整性处理后或者处理失败后会发生什么"></a>在消息得到完整性处理后或者处理失败后会发生什么</h3><p>为了理解这个问题，让我们先了解一下 tuple 的生命周期。下面是定义 spout 的接口（可以在 Javadoc 中查看更多细节信息）：</p>
 <pre><code>public interface ISpout extends Serializable {
     void open(Mapconf, TopologyContextcontext, SpoutOutputCollectorcollector);

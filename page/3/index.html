@@ -388,7 +388,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:02" itemprop="dateModified" datetime="2018-05-24T10:55:02+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:10:57" itemprop="dateModified" datetime="2018-05-24T11:10:57+08:00">2018-05-24</time>
               
             
           </span>
@@ -442,7 +442,6 @@
         
           <p>最近在学习使用storm，在storm和kafka结合的时候，ByTopicRecordTranslator配置的初始化中用到了java8的新东西，看了好久都没看懂是什么意思，于是就决定来学习一下，也感受一下高大上的新特性。首先来感受一下lambda表达式吧，听说这是以后的编程风格。</p>
 <h3 id="Lambda表达式的使用"><a href="#Lambda表达式的使用" class="headerlink" title="Lambda表达式的使用"></a>Lambda表达式的使用</h3><p>主要用于替换以前广泛使用的内部匿名类，各种回调，比如事件响应器、传入Thread类的Runnable等<br>一个简单的例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Thread oldSchool = new Thread( new Runnable () &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            System.out.println(&quot;This is from an anonymous class.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; );</span><br><span class="line">    </span><br><span class="line">Thread gaoDuanDaQiShangDangCi = new Thread( () -&gt; &#123;</span><br><span class="line">    System.out.println(&quot;This is from an anonymous method (lambda exp).&quot;);</span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/16/Lambda表达式/#more" rel="contents">
@@ -568,7 +567,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:41" itemprop="dateModified" datetime="2018-05-24T10:55:41+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:11:52" itemprop="dateModified" datetime="2018-05-24T11:11:52+08:00">2018-05-24</time>
               
             
           </span>
@@ -631,8 +630,7 @@ builder.setBolt(&quot;split&quot;, newSplitSentence(), 10)
         .shuffleGrouping(&quot;sentences&quot;);
 builder.setBolt(&quot;count&quot;, newWordCount(), 20)
         .fieldsGrouping(&quot;split&quot;, newFields(&quot;word&quot;));
-</code></pre><p>这个拓扑从一个 Kestrel 队列中读取句子，然后将句子分解成若干个单词，然后将它每个单词和该单词的数量发送出去。这种情况下，从 spout 中发出的 tuple 就会产生很多基于它创建的新 tuple：包括句子中单词的 tuple 和 每个单词的个数的 tuple。这些消息构成了这样一棵树：<br><img src="/img/tuple_tree.png" alt="tuple树"></p>
-<p>如果这棵 tuple 树发送完成，并且树中的每一条消息都得到了正确的处理，就表明发送 tuple 的 spout 已经得到了“完整性处理”。对应的，如果在指定的超时时间内 tuple 树中有消息没有完成处理就意味着这个 tuple 失败了。这个超时时间可以使用 Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS 参数在构造拓扑时进行配置，如果不配置，则默认时间为 30 秒。</p>
+</code></pre>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/11/storm消息的可靠性/#more" rel="contents">
@@ -758,7 +756,7 @@ builder.setBolt(&quot;count&quot;, newWordCount(), 20)
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:28" itemprop="dateModified" datetime="2018-05-24T10:55:28+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:11:38" itemprop="dateModified" datetime="2018-05-24T11:11:38+08:00">2018-05-24</time>
               
             
           </span>
@@ -816,7 +814,6 @@ builder.setBolt(&quot;count&quot;, newWordCount(), 20)
 <li>执行器（executors）</li>
 <li>任务（tasks）</li>
 </ol>
-<p>下面是他们之间相互关系的简单图示。<br><img src="/img/storm1.png" alt="storm关系图"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/11/storm拓扑的并行度/#more" rel="contents">
@@ -1127,7 +1124,7 @@ builder.setBolt(&quot;count&quot;, newWordCount(), 20)
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:01" itemprop="dateModified" datetime="2018-05-24T10:55:01+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:10:26" itemprop="dateModified" datetime="2018-05-24T11:10:26+08:00">2018-05-24</time>
               
             
           </span>
@@ -1164,13 +1161,6 @@ builder.setBolt(&quot;count&quot;, newWordCount(), 20)
           <h1 id="一、单机版的安装"><a href="#一、单机版的安装" class="headerlink" title="一、单机版的安装"></a>一、单机版的安装</h1><h2 id="1-上官网-下载软件包"><a href="#1-上官网-下载软件包" class="headerlink" title="1. 上官网 下载软件包"></a>1. 上<a href="https://www.elastic.co/cn/products" target="_blank" rel="noopener">官网</a> 下载软件包</h2><h2 id="2-1-elasticsearch安装"><a href="#2-1-elasticsearch安装" class="headerlink" title="2.1 elasticsearch安装"></a>2.1 elasticsearch安装</h2><h4 id="1-解压安装包，创建elsearch用户组及elsearch用户"><a href="#1-解压安装包，创建elsearch用户组及elsearch用户" class="headerlink" title="1. 解压安装包，创建elsearch用户组及elsearch用户"></a>1. 解压安装包，创建elsearch用户组及elsearch用户</h4><blockquote>
 <p>groupadd elsearch<br>useradd elsearch -g elsearch -p elasticsearch</p>
 </blockquote>
-<h4 id="2-更改elasticsearch文件夹及内部文件的所属用户及组为elsearch-elsearch"><a href="#2-更改elasticsearch文件夹及内部文件的所属用户及组为elsearch-elsearch" class="headerlink" title="2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch"></a>2. 更改elasticsearch文件夹及内部文件的所属用户及组为elsearch:elsearch</h4><blockquote>
-<p>chown-Relsearch:elsearchelasticsearch</p>
-</blockquote>
-<p>elasticsearch为你elasticsearch的目录名称</p>
-<h4 id="3-切换到elsearch用户再启动"><a href="#3-切换到elsearch用户再启动" class="headerlink" title="3. 切换到elsearch用户再启动"></a>3. 切换到elsearch用户再启动</h4><p> <code>su elsearch #切换账户cd elasticsearch/bin #进入你的elasticsearch目录下的bin目录
-./elasticsearch</code></p>
-<h4 id="4-后台启动-elasticsearch-d"><a href="#4-后台启动-elasticsearch-d" class="headerlink" title="4. 后台启动./elasticsearch -d"></a>4. 后台启动./elasticsearch -d</h4>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/10/ELK环境搭建/#more" rel="contents">

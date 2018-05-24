@@ -115,20 +115,20 @@
 
 
 
-  <meta name="description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）  下面是他们之间相互关系的简单图示。">
+  <meta name="description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
 <meta name="keywords" content="storm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="storm拓扑的并行度(官方)">
 <meta property="og:url" content="http://jyzhangbo.cn/2017/10/11/storm拓扑的并行度/index.html">
 <meta property="og:site_name" content="jyzhangbo的博客">
-<meta property="og:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）  下面是他们之间相互关系的简单图示。">
+<meta property="og:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jyzhangbo.cn/img/storm1.png">
 <meta property="og:image" content="http://jyzhangbo.cn/img/storm2.png">
-<meta property="og:updated_time" content="2018-05-24T02:55:28.282Z">
+<meta property="og:updated_time" content="2018-05-24T03:11:38.754Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="storm拓扑的并行度(官方)">
-<meta name="twitter:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）  下面是他们之间相互关系的简单图示。">
+<meta name="twitter:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
 <meta name="twitter:image" content="http://jyzhangbo.cn/img/storm1.png">
 
 
@@ -388,7 +388,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 10:55:28" itemprop="dateModified" datetime="2018-05-24T10:55:28+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-24 11:11:38" itemprop="dateModified" datetime="2018-05-24T11:11:38+08:00">2018-05-24</time>
               
             
           </span>
@@ -445,8 +445,8 @@
 <li>执行器（executors）</li>
 <li>任务（tasks）</li>
 </ol>
-<p>下面是他们之间相互关系的简单图示。<br><img src="/img/storm1.png" alt="storm关系图"></p>
 <a id="more"></a>
+<p>下面是他们之间相互关系的简单图示。<br><img src="/img/storm1.png" alt="storm关系图"></p>
 <p>在 Worker 中运行的是拓扑的一个子集。一个 worker 进程是从属于某一个特定的拓扑的，在 worker 进程中会运行一个或者多个与拓扑中的组件相关联的 executor。一个运行中的拓扑就是由这些运行于 Storm 集群中的很多机器上的进程组成的。<br>一个 executor 是由 worker 进程生成的一个线程。在 executor 中可能会有一个或者多个 task，这些 task 都是为同一个组件（spout 或者 bolt）服务的。<br>task 是实际执行数据处理的最小工作单元（注意，task 并不是线程） —— 在你的代码中实现的每个 spout 或者 bolt 都会在集群中运行很多个 task。在拓扑的整个生命周期中每个组件的 task 数量都是保持不变的，不过每个组件的 executor 数量却是有可能会随着时间变化。在默认情况下 task 的数量是和 executor 的数量一样的，也就是说，默认情况下 Storm 会在每个线程上运行一个 task。</p>
 <h3 id="配置拓扑的并行度（parallelism）"><a href="#配置拓扑的并行度（parallelism）" class="headerlink" title="配置拓扑的并行度（parallelism）"></a>配置拓扑的并行度（parallelism）</h3><p>注意，这里所说的术语“并行度”主要是用于表示所谓的 parallelism_hint，它代表着一个组件的初始 executor （也是线程）数量。在这篇文章里，我们使用这个“并行度”术语来说明在 Storm 拓扑中既可以配置 executor 的数量，也可以配置 worker 和 task 的数量。如果“并行度”的概念需要表示其他的一般情况，我们也会特别指出。<br>下面的内容里显示了很多可配置选项，以及在代码中配置他们的方法。可以用于配置的方法有很多种，这里列出的只是其中一部分。另外需要注意的是，Storm 的配置优先级为 defaults.yaml &lt; storm.yaml &lt; 拓扑配置 &lt; 内置型组件信息配置 &lt; 外置型组件信息配置。</p>
 <h4 id="Worker-数量"><a href="#Worker-数量" class="headerlink" title="Worker 数量"></a>Worker 数量</h4><ul>
