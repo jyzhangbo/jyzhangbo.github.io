@@ -125,7 +125,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jyzhangbo.cn/img/ConcurrentHashMap.png">
 <meta property="og:image" content="http://jyzhangbo.cn/img/node.png">
-<meta property="og:updated_time" content="2018-05-24T03:10:26.181Z">
+<meta property="og:updated_time" content="2018-05-28T15:26:36.810Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ConcurrentHashMap源码">
 <meta name="twitter:description" content="数据结构ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下">
@@ -388,7 +388,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-24 11:10:26" itemprop="dateModified" datetime="2018-05-24T11:10:26+08:00">2018-05-24</time>
+                <time title="修改时间：2018-05-28 23:26:36" itemprop="dateModified" datetime="2018-05-28T23:26:36+08:00">2018-05-28</time>
               
             
           </span>
@@ -442,10 +442,10 @@
         <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>ConcurrentHashMap相比HashMap而言，是多线程安全的，其底层数据与HashMap的数据结构相同，数据结构如下</p>
 <p><img src="/img/ConcurrentHashMap.png" alt="img"></p>
 <a id="more"></a>
-<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><h5 id="类的继承关系"><a href="#类的继承关系" class="headerlink" title="类的继承关系"></a>类的继承关系</h5><blockquote>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><h4 id="类的继承关系"><a href="#类的继承关系" class="headerlink" title="类的继承关系"></a>类的继承关系</h4><blockquote>
 <p>public class ConcurrentHashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt; implements ConcurrentMap&lt;K,V&gt;, Serializable {}</p>
 </blockquote>
-<h5 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h5><p><img src="/img/node.png" alt="img"></p>
+<h4 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h4><p><img src="/img/node.png" alt="img"></p>
 <p>很庞大的内部类，其中还有BulkTask及其子类，实在1.8版本添加的，有几十个暂时不知道干啥用呢。</p>
 <ol>
 <li>node类</li>
@@ -467,7 +467,7 @@
 <li>CounterCell</li>
 </ol>
 <p>CounterCell类主要用于对baseCount的计数。</p>
-<h5 id="类的属性"><a href="#类的属性" class="headerlink" title="类的属性"></a>类的属性</h5><pre><code>public class ConcurrentHashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;
+<h4 id="类的属性"><a href="#类的属性" class="headerlink" title="类的属性"></a>类的属性</h4><pre><code>public class ConcurrentHashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;
     implements ConcurrentMap&lt;K,V&gt;, Serializable {
     private static final long serialVersionUID = 7249069246763182397L;
 
@@ -601,7 +601,7 @@
     }
 }
 </code></pre><p>Unsafe实例，主要用于反射获取对象相应的字段。</p>
-<h5 id="类的构造函数"><a href="#类的构造函数" class="headerlink" title="类的构造函数"></a>类的构造函数</h5><pre><code>1.创建一个带有默认初始容量 (16)、加载因子 (0.75) 和 concurrencyLevel (16) 的新的空映射
+<h4 id="类的构造函数"><a href="#类的构造函数" class="headerlink" title="类的构造函数"></a>类的构造函数</h4><pre><code>1.创建一个带有默认初始容量 (16)、加载因子 (0.75) 和 concurrencyLevel (16) 的新的空映射
 public ConcurrentHashMap() {
 }
 
@@ -643,7 +643,7 @@ public ConcurrentHashMap(int initialCapacity,
         MAXIMUM_CAPACITY : tableSizeFor((int)size);
     this.sizeCtl = cap;
 }
-</code></pre><h5 id="核心函数"><a href="#核心函数" class="headerlink" title="核心函数"></a>核心函数</h5><pre><code>final V putVal(K key, V value, boolean onlyIfAbsent) {
+</code></pre><h4 id="核心函数"><a href="#核心函数" class="headerlink" title="核心函数"></a>核心函数</h4><pre><code>final V putVal(K key, V value, boolean onlyIfAbsent) {
         if (key == null || value == null) throw new NullPointerException(); // 键或值为空，抛出异常
         // 键的hash值经过计算获得hash值
         int hash = spread(key.hashCode());
@@ -1082,7 +1082,7 @@ get函数根据key的hash值来计算在哪个桶中，再遍历桶，查找元�
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1109,7 +1109,9 @@ get函数根据key的hash值来计算在哪个桶中，再遍历桶，查找元�
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1150,7 +1152,9 @@ get函数根据key的hash值来计算在哪个桶中，再遍历桶，查找元�
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                    <span class="site-state-item-count">15</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1209,7 +1213,7 @@ get函数根据key的hash值来计算在哪个桶中，再遍历桶，查找元�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#类的继承关系"><span class="nav-number">2.0.1.</span> <span class="nav-text">类的继承关系</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内部类"><span class="nav-number">2.0.2.</span> <span class="nav-text">内部类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类的属性"><span class="nav-number">2.0.3.</span> <span class="nav-text">类的属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类的构造函数"><span class="nav-number">2.0.4.</span> <span class="nav-text">类的构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#核心函数"><span class="nav-number">2.0.5.</span> <span class="nav-text">核心函数</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类的继承关系"><span class="nav-number">2.1.</span> <span class="nav-text">类的继承关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部类"><span class="nav-number">2.2.</span> <span class="nav-text">内部类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类的属性"><span class="nav-number">2.3.</span> <span class="nav-text">类的属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类的构造函数"><span class="nav-number">2.4.</span> <span class="nav-text">类的构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#核心函数"><span class="nav-number">2.5.</span> <span class="nav-text">核心函数</span></a></li></ol></li></ol></div>
             
 
           </div>

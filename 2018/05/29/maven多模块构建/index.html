@@ -115,28 +115,25 @@
 
 
 
-  <meta name="description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
-<meta name="keywords" content="storm">
+  <meta name="description" content="多模块构建在多模块Maven项目中，反应堆（Reactor）是一个包含了所有需要构建模块的抽象概念，对于Maven用户来说，主要关心的是两点： 哪些模块会被包含到反应堆中？反应堆中所有模块的构建顺序是什么？">
+<meta name="keywords" content="maven">
 <meta property="og:type" content="article">
-<meta property="og:title" content="storm拓扑的并行度(官方)">
-<meta property="og:url" content="http://jyzhangbo.cn/2017/10/11/storm拓扑的并行度/index.html">
+<meta property="og:title" content="maven多模块构建">
+<meta property="og:url" content="http://jyzhangbo.cn/2018/05/29/maven多模块构建/index.html">
 <meta property="og:site_name" content="jyzhangbo的博客">
-<meta property="og:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
+<meta property="og:description" content="多模块构建在多模块Maven项目中，反应堆（Reactor）是一个包含了所有需要构建模块的抽象概念，对于Maven用户来说，主要关心的是两点： 哪些模块会被包含到反应堆中？反应堆中所有模块的构建顺序是什么？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://jyzhangbo.cn/img/storm1.png">
-<meta property="og:image" content="http://jyzhangbo.cn/img/storm2.png">
-<meta property="og:updated_time" content="2018-05-24T03:11:38.754Z">
+<meta property="og:updated_time" content="2018-05-29T02:38:58.970Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="storm拓扑的并行度(官方)">
-<meta name="twitter:description" content="拓扑的组成一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：  工作进程（worker processes） 执行器（executors） 任务（tasks）">
-<meta name="twitter:image" content="http://jyzhangbo.cn/img/storm1.png">
+<meta name="twitter:title" content="maven多模块构建">
+<meta name="twitter:description" content="多模块构建在多模块Maven项目中，反应堆（Reactor）是一个包含了所有需要构建模块的抽象概念，对于Maven用户来说，主要关心的是两点： 哪些模块会被包含到反应堆中？反应堆中所有模块的构建顺序是什么？">
 
 
 
 
 
 
-  <link rel="canonical" href="http://jyzhangbo.cn/2017/10/11/storm拓扑的并行度/"/>
+  <link rel="canonical" href="http://jyzhangbo.cn/2018/05/29/maven多模块构建/"/>
 
 
 
@@ -146,7 +143,7 @@
   };
 </script>
 
-  <title>storm拓扑的并行度(官方) | jyzhangbo的博客</title>
+  <title>maven多模块构建 | jyzhangbo的博客</title>
   
 
 
@@ -329,7 +326,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2017/10/11/storm拓扑的并行度/">
+    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2018/05/29/maven多模块构建/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="jyzhangbo">
@@ -346,7 +343,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">storm拓扑的并行度(官方)
+          <h1 class="post-title" itemprop="name headline">maven多模块构建
               
             
           </h1>
@@ -371,24 +368,12 @@
                 
               
 
-              <time title="创建时间：2017-10-11 10:11:52" itemprop="dateCreated datePublished" datetime="2017-10-11T10:11:52+08:00">2017-10-11</time>
+              <time title="创建时间：2018-05-29 10:37:29 / 修改时间：10:38:58" itemprop="dateCreated datePublished" datetime="2018-05-29T10:37:29+08:00">2018-05-29</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-05-24 11:11:38" itemprop="dateModified" datetime="2018-05-24T11:11:38+08:00">2018-05-24</time>
               
             
           </span>
@@ -405,7 +390,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/storm/" itemprop="url" rel="index"><span itemprop="name">storm</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/maven/" itemprop="url" rel="index"><span itemprop="name">maven</span></a></span>
 
                 
                 
@@ -439,74 +424,17 @@
       
 
       
-        <h3 id="拓扑的组成"><a href="#拓扑的组成" class="headerlink" title="拓扑的组成"></a>拓扑的组成</h3><p>一个运行中的拓扑是由什么构成的：工作进程（workerprocesses），执行器（executors）和任务（tasks）<br>在一个 Storm 集群中，Storm 主要通过以下三个部件来运行拓扑：</p>
-<ol>
-<li>工作进程（worker processes）</li>
-<li>执行器（executors）</li>
-<li>任务（tasks）</li>
-</ol>
+        <h3 id="多模块构建"><a href="#多模块构建" class="headerlink" title="多模块构建"></a>多模块构建</h3><p>在多模块Maven项目中，反应堆（Reactor）是一个包含了所有需要构建模块的抽象概念，对于Maven用户来说，主要关心的是两点：</p>
+<p>哪些模块会被包含到反应堆中？<br>反应堆中所有模块的构建顺序是什么？</p>
 <a id="more"></a>
-<p>下面是他们之间相互关系的简单图示。<br><img src="/img/storm1.png" alt="storm关系图"></p>
-<p>在 Worker 中运行的是拓扑的一个子集。一个 worker 进程是从属于某一个特定的拓扑的，在 worker 进程中会运行一个或者多个与拓扑中的组件相关联的 executor。一个运行中的拓扑就是由这些运行于 Storm 集群中的很多机器上的进程组成的。<br>一个 executor 是由 worker 进程生成的一个线程。在 executor 中可能会有一个或者多个 task，这些 task 都是为同一个组件（spout 或者 bolt）服务的。<br>task 是实际执行数据处理的最小工作单元（注意，task 并不是线程） —— 在你的代码中实现的每个 spout 或者 bolt 都会在集群中运行很多个 task。在拓扑的整个生命周期中每个组件的 task 数量都是保持不变的，不过每个组件的 executor 数量却是有可能会随着时间变化。在默认情况下 task 的数量是和 executor 的数量一样的，也就是说，默认情况下 Storm 会在每个线程上运行一个 task。</p>
-<h3 id="配置拓扑的并行度（parallelism）"><a href="#配置拓扑的并行度（parallelism）" class="headerlink" title="配置拓扑的并行度（parallelism）"></a>配置拓扑的并行度（parallelism）</h3><p>注意，这里所说的术语“并行度”主要是用于表示所谓的 parallelism_hint，它代表着一个组件的初始 executor （也是线程）数量。在这篇文章里，我们使用这个“并行度”术语来说明在 Storm 拓扑中既可以配置 executor 的数量，也可以配置 worker 和 task 的数量。如果“并行度”的概念需要表示其他的一般情况，我们也会特别指出。<br>下面的内容里显示了很多可配置选项，以及在代码中配置他们的方法。可以用于配置的方法有很多种，这里列出的只是其中一部分。另外需要注意的是，Storm 的配置优先级为 defaults.yaml &lt; storm.yaml &lt; 拓扑配置 &lt; 内置型组件信息配置 &lt; 外置型组件信息配置。</p>
-<h4 id="Worker-数量"><a href="#Worker-数量" class="headerlink" title="Worker 数量"></a>Worker 数量</h4><ul>
-<li>说明：拓扑在集群中运行所需要的工作进程数</li>
-<li>配置选项：TOPOLOGY_WORKERS</li>
-<li>在代码中如何使用（示例）：<br> Config#setNumWorkers</li>
-</ul>
-<h4 id="Executors（线程）数量"><a href="#Executors（线程）数量" class="headerlink" title="Executors（线程）数量"></a>Executors（线程）数量</h4><ul>
-<li>说明：每个组件需要的执行线程数</li>
-<li>配置选项：（没有拓扑级的通用配置项）</li>
-<li><p>在代码中如何使用（示例）：</p>
-<p> TopologyBuilder#setSpout()<br> TopologyBuilder#setBolt()<br> 注意：从 Storm 0.8 开始 parallelism_hint 参数代表 executor 的数量，而不是 task 的数量</p>
-</li>
-</ul>
-<h4 id="Tasks-数量"><a href="#Tasks-数量" class="headerlink" title="Tasks 数量"></a>Tasks 数量</h4><ul>
-<li>说明：每个组件需要的执行任务数</li>
-<li>配置选项：TOPOLOGY_TASKS</li>
-<li>在代码中如何使用（示例）：</li>
-</ul>
-<blockquote>
-<p>ComponentConfigurationDeclarer#setNumTasks()</p>
+<h4 id="–resume-from"><a href="#–resume-from" class="headerlink" title="–resume-from"></a>–resume-from</h4><p>表示从该模块恢复，也就是说选择从哪里开始构建，等于剪掉了完整反应堆的前面一部分。</p>
+<h4 id="–projects"><a href="#–projects" class="headerlink" title="–projects"></a>–projects</h4><p>表示手动选择需要构建的项目，项目间以逗号分隔。</p>
+<h4 id="–also-make"><a href="#–also-make" class="headerlink" title="–also-make"></a>–also-make</h4><p>前提是–projects参数，表示同时构建所列模块依赖的其他模块。</p>
+<h4 id="–also-make-dependents"><a href="#–also-make-dependents" class="headerlink" title="–also-make-dependents"></a>–also-make-dependents</h4><p>前提是–projects参数，表示同时构建那些依赖于所列模块的模块。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><blockquote>
+<p>mvn clean package -pl operation-consumer-app-api/ -am -Dmaven.test.skip=true</p>
 </blockquote>
-<p>以下是配置上述参数的一个简单示例代码：</p>
-<pre><code>topologyBuilder.setBolt(&quot;green-bolt&quot;, newGreenBolt(), 2)
-               .setNumTasks(4)
-               .shuffleGrouping(&quot;blue-spout);
-</code></pre><p>在上面的代码中，我们为 GreenBolt 配置了 2 个初始执行线程（executor）和 4 个关联任务（task）。这样，每个执行线程中会运行 2 个任务。如果你在设置 bolt 的时候不指定 task 的数量，那么每个 executor 的 task 数会默认设置为 1。</p>
-<h3 id="拓扑示例"><a href="#拓扑示例" class="headerlink" title="拓扑示例"></a>拓扑示例</h3><p>下图显示了一个与实际应用场景很接近的简单拓扑的结构。这个拓扑由三个组件构成：一个名为 BlueSpout 的 spout，和两个名为 GreenBolt 和 YellowBolt 的 bolt。这些组件之间的关系是：BlueSpout 将它的输出发送到 GreenBolt 中，然后GreenBolt 将消息继续发送到 YellowBolt 中。<br><img src="/img/storm2.png" alt="storm拓扑示例"></p>
-<pre><code>图中是一个包含有两个 worker 进程的拓扑。其中，蓝色的 BlueSpout 有两个 executor，每个 executor 中有一个 task，并行度为 2；绿色的 GreenBolt 有两个 executor，每个 executor 有两个 task，并行度也为2；而黄色的YellowBolt 有 6 个 executor，每个 executor 中有一个 task，并行度为 6，因此，这个拓扑的总并行度就是 2 + 2 + 6 = 10。具体分配到每个 worker 就有 10 / 2 = 5 个 executor。
-</code></pre><p>上图中，GreenBolt 配置了 task 数，而 BlueSpout 和 YellowBolt 仅仅配置了 executor 数。下面是相关代码：</p>
-<pre><code>Config conf =newConfig();
-conf.setNumWorkers(2); // use two worker processes
-
-topologyBuilder.setSpout(&quot;blue-spout&quot;, newBlueSpout(), 2); // set parallelism hint to 2
-
-topologyBuilder.setBolt(&quot;green-bolt&quot;, newGreenBolt(), 2)
-               .setNumTasks(4)
-               .shuffleGrouping(&quot;blue-spout&quot;);
-
-topologyBuilder.setBolt(&quot;yellow-bolt&quot;, newYellowBolt(), 6)
-               .shuffleGrouping(&quot;green-bolt&quot;);
-
-StormSubmitter.submitTopology(
-        &quot;mytopology&quot;,
-        conf,
-        topologyBuilder.createTopology()
-    );
-</code></pre><p>当然，Storm 还有一些其他的配置项可以控制拓扑的并行度，包括：</p>
-<blockquote>
-<p>TOPOLOGY_MAX_TASK_PARALLELISM：该选项设置了一个组件最多能够分配的 executor 数（线程数上限），一般用于在本地模式运行拓扑时测试分配线程的数量限制。你可以通过 Config#setMaxTaskParallelism() 来配置该参数。</p>
-</blockquote>
-<h3 id="如何修改运行中的拓扑的并行度"><a href="#如何修改运行中的拓扑的并行度" class="headerlink" title="如何修改运行中的拓扑的并行度"></a>如何修改运行中的拓扑的并行度</h3><p>Storm 的一个很有意思的特点是你可以随时增加或者减少 worker 或者 executor 的数量，而不需要重启集群或者拓扑。这个方法就叫做再平衡（rebalance）。<br>有两种方法可以对一个拓扑执行再平衡操作：<br>使用 Storm UI<br>使用以下所示的客户端（CLI）工具<br>下面是使用 CLI 工具的一个简单示例：</p>
-<ul>
-<li>重新配置拓扑 “mytopology”，使得该拓扑拥有 5 个 worker processes</li>
-<li>另外，配置名为 “blue-spout” 的 spout 使用 3 个 executor</li>
-<li>配置名为 “yellow-bolt” 的 bolt 使用 10 个 executor</li>
-</ul>
-<blockquote>
-<p>$ storm rebalance mytopology -n 5 -e blue-spout=3 -e yellow-bolt=10</p>
-</blockquote>
+<p>其中-pl用来确定需要打包的项目，需要有反斜线。-am用来表示需要将依赖模块也打包进去</p>
 
       
     </div>
@@ -537,7 +465,7 @@ StormSubmitter.submitTopology(
       
         <div class="post-tags">
           
-            <a href="/tags/storm/" rel="tag"><i class="fa fa-tag"></i> storm</a>
+            <a href="/tags/maven/" rel="tag"><i class="fa fa-tag"></i> maven</a>
           
         </div>
       
@@ -550,8 +478,8 @@ StormSubmitter.submitTopology(
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/10/storm是什么/" rel="next" title="storm是什么">
-                <i class="fa fa-chevron-left"></i> storm是什么
+              <a href="/2018/05/28/hexo-next搭建个人博客/" rel="next" title="hexo+next+github搭建个人博客">
+                <i class="fa fa-chevron-left"></i> hexo+next+github搭建个人博客
               </a>
             
           </div>
@@ -559,10 +487,6 @@ StormSubmitter.submitTopology(
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/10/11/storm消息的可靠性/" rel="prev" title="storm消息的可靠性(官方)">
-                storm消息的可靠性(官方) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -771,7 +695,7 @@ StormSubmitter.submitTopology(
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#拓扑的组成"><span class="nav-number">1.</span> <span class="nav-text">拓扑的组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置拓扑的并行度（parallelism）"><span class="nav-number">2.</span> <span class="nav-text">配置拓扑的并行度（parallelism）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Worker-数量"><span class="nav-number">2.1.</span> <span class="nav-text">Worker 数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Executors（线程）数量"><span class="nav-number">2.2.</span> <span class="nav-text">Executors（线程）数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tasks-数量"><span class="nav-number">2.3.</span> <span class="nav-text">Tasks 数量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拓扑示例"><span class="nav-number">3.</span> <span class="nav-text">拓扑示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何修改运行中的拓扑的并行度"><span class="nav-number">4.</span> <span class="nav-text">如何修改运行中的拓扑的并行度</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#多模块构建"><span class="nav-number">1.</span> <span class="nav-text">多模块构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#–resume-from"><span class="nav-number">1.1.</span> <span class="nav-text">–resume-from</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#–projects"><span class="nav-number">1.2.</span> <span class="nav-text">–projects</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#–also-make"><span class="nav-number">1.3.</span> <span class="nav-text">–also-make</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#–also-make-dependents"><span class="nav-number">1.4.</span> <span class="nav-text">–also-make-dependents</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">2.</span> <span class="nav-text">例子</span></a></li></ol></div>
             
 
           </div>
