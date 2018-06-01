@@ -115,25 +115,23 @@
 
 
 
-  <meta name="description" content="java8新增的另外一个实用的类就是optional了，此类主要是解决NullPointException的问题。但并不是简简单单的判断一个对象是否为空，而是应该换种思路来处理对象为空的问题。我们应该尽量不去使用isPresent()和get()方法，尽管官方解释中用到了这两个方法。 官方解释 A container object which may or may not contain a no">
-<meta name="keywords" content="java8">
-<meta property="og:type" content="article">
-<meta property="og:title" content="optional类">
-<meta property="og:url" content="http://jyzhangbo.cn/2017/10/17/optional类/index.html">
+  <meta name="description" content="我的博客我做主">
+<meta property="og:type" content="website">
+<meta property="og:title" content="jyzhangbo的博客">
+<meta property="og:url" content="http://jyzhangbo.cn/categories/redis/index.html">
 <meta property="og:site_name" content="jyzhangbo的博客">
-<meta property="og:description" content="java8新增的另外一个实用的类就是optional了，此类主要是解决NullPointException的问题。但并不是简简单单的判断一个对象是否为空，而是应该换种思路来处理对象为空的问题。我们应该尽量不去使用isPresent()和get()方法，尽管官方解释中用到了这两个方法。 官方解释 A container object which may or may not contain a no">
+<meta property="og:description" content="我的博客我做主">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-05-24T02:54:34.119Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="optional类">
-<meta name="twitter:description" content="java8新增的另外一个实用的类就是optional了，此类主要是解决NullPointException的问题。但并不是简简单单的判断一个对象是否为空，而是应该换种思路来处理对象为空的问题。我们应该尽量不去使用isPresent()和get()方法，尽管官方解释中用到了这两个方法。 官方解释 A container object which may or may not contain a no">
+<meta name="twitter:title" content="jyzhangbo的博客">
+<meta name="twitter:description" content="我的博客我做主">
 
 
 
 
 
 
-  <link rel="canonical" href="http://jyzhangbo.cn/2017/10/17/optional类/"/>
+  <link rel="canonical" href="http://jyzhangbo.cn/categories/redis/"/>
 
 
 
@@ -143,7 +141,7 @@
   };
 </script>
 
-  <title>optional类 | jyzhangbo的博客</title>
+  <title>分类: redis | jyzhangbo的博客</title>
   
 
 
@@ -190,7 +188,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left ">
     <div class="headband"></div>
 
 	<a href="https://github.com/jyzhangbo" class="github-corner" aria-label="View source on Github"><svg width="92" height="92" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
@@ -265,7 +263,7 @@
         
         
           
-          <li class="menu-item menu-item-categories">
+          <li class="menu-item menu-item-categories menu-item-active">
     <a href="/categories/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
   </li>
@@ -285,6 +283,31 @@
 
   
     
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
 
   
 
@@ -310,289 +333,59 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
+  
+  
+  
+  <div class="post-block category">
 
-  
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>redis<small>分类</small>
+        </h1>
+      </div>
 
-  
-  
-  
-
-  
+      
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://jyzhangbo.cn/2017/10/17/optional类/">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="jyzhangbo">
-      <meta itemprop="description" content="我的博客我做主">
-      <meta itemprop="image" content="/img/touxiang.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="jyzhangbo的博客">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h2 class="post-title">
         
+            <a class="post-title-link" href="/2018/05/31/redis缓存问题/" itemprop="url">
+              
+                <span itemprop="name">redis缓存问题</span>
+              
+            </a>
         
-          <h1 class="post-title" itemprop="name headline">optional类
-              
-            
-          </h1>
-        
+      </h2>
 
-        <div class="post-meta">
-          <span class="post-time">
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-05-31T16:36:01+08:00"
+              content="2018-05-31" >
+          05-31
+        </time>
+      </div>
 
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-10-17 11:19:12" itemprop="dateCreated datePublished" datetime="2017-10-17T11:19:12+08:00">2017-10-17</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-05-24 10:54:34" itemprop="dateModified" datetime="2018-05-24T10:54:34+08:00">2018-05-24</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java基础/" itemprop="url" rel="index"><span itemprop="name">java基础</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>java8新增的另外一个实用的类就是optional了，此类主要是解决NullPointException的问题。但并不是简简单单的判断一个对象是否为空，而是应该换种思路来处理对象为空的问题。我们应该尽量不去使用isPresent()和get()方法，尽管官方解释中用到了这两个方法。</p>
-<h3 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h3><blockquote>
-<p>A container object which may or may not contain a non-null value.If a value is present, {@code isPresent()} will return {@code true} and * {@code get()} will return the value.<br>翻译：这是一个可以为null的容器对象。如果值存在则isPresent()方法会返回true，调用get()方法会返回该对象。</p>
-</blockquote>
-<p>这个解释可能会误导我们。我们真正应该使用的是下面这几个：</p>
-<ol>
-<li>public<u> Optional<u> map(Function&lt;? super T, ? extends U&gt; mapper)</u></u></li>
-<li>public T orElse(T other)</li>
-<li>public T orElseGet(Supplier&lt;? extends T&gt; other)</li>
-<li>public void ifPresent(Consumer&lt;? super T&gt; consumer)</li>
-<li>public Optional<t> filter(Predicate&lt;? super T&gt; predicate)</t></li>
-<li>public<u> Optional<u> flatMap(Function&lt;? super T, Optional<u>&gt; mapper)</u></u></u></li>
-<li>public <x extends="" throwable=""> T orElseThrow(Supplier&lt;? extends X&gt; exceptionSupplier) throws X</x></li>
-</ol>
-<a id="more"></a>
-<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><pre><code>public static void main(String[] args) {
-
-Integer value = null;
-Integer value1 = 2;
-
-// of创建一个Optional但是参数不能为null，否则抛出NullPointerException
-// Optional&lt;Integer&gt; opt = Optional.of(value);
-Optional&lt;Integer&gt; opt = Optional.of(value1);
-// get如果optional存在则返回值，不存在抛出NoSuchElementException
-System.out.println(opt.get()); // 返回2
-
-// ofNullable方法可以接受null,是null则返回一个空的Optional
-Optional&lt;Integer&gt; optional = Optional.ofNullable(value);
-// 抛出异常
-// System.out.println(optional.get());
-
-// isPresent如果存在则返回true，否则返回false
-System.out.println(opt.isPresent()); // true
-System.out.println(optional.isPresent()); // false
-
-// orElse存在则返回，不存在则返回默认值
-System.out.println(opt.orElse(1)); // 返回2
-System.out.println(optional.orElse(1)); // 返回1
-
-// orElseGet存在则返回，不存在则调用函数，与orElse类似，就是默认值不一样，一个是传入的字符串，一个是Supplier接口的实现
-System.out.println(optional.orElseGet(() -&gt; 1)); // 1
-
-// orElseThrow存在则返回，不存在抛出创建的异常
-try {
-  System.out.println(optional.orElseThrow(NullPointerException::new));
-} catch (Exception e) {
-  System.out.println(&quot;空&quot;); // 空
-}
-try {
-  System.out.println(opt.orElseThrow(NullPointerException::new)); // 2
-} catch (Exception e) {
-  System.out.println(&quot;空&quot;);
-}
-
-// 存在则执行方法
-opt.ifPresent(System.out::println); // 2
-
-// map如果有值，则对其执行调用mapping函数得到返回值。如果返回值不为null，则创建包含mapping返回值的Optional作为map方法返回值，
-// 否则返回空Optional。
-Optional&lt;Integer&gt; map = opt.map(i -&gt; i + 2);
-System.out.println(map.get()); // 4
-Optional&lt;Integer&gt; map2 = optional.map(i -&gt; i + 1);
-System.out.println(map2.orElse(2)); // 2
-
-// flatMap
-// flatMap方法与map方法类似，区别在于mapping函数的返回值不同。map方法的mapping函数返回值可以是任何类型T，而flatMap方法的mapping函数必须是Optional
-Optional&lt;Integer&gt; flatMap = opt.flatMap(i -&gt; Optional.of(i + 2));
-System.out.println(flatMap.get()); // 4
-
-// filter通过传入限定条件对Optional实例的值进行过滤
-Optional&lt;Integer&gt; filter = opt.filter(i -&gt; i &gt; 1);
-System.out.println(filter.orElse(1));
-</code></pre><p>  }</p>
-
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-	
-	<div>
-	  
-		<div>
-    
-        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
-</div>
-	  
-	</div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/java8/" rel="tag"><i class="fa fa-tag"></i> java8</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2017/10/16/Stream语法/" rel="next" title="Stream语法">
-                <i class="fa fa-chevron-left"></i> Stream语法
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/10/19/java线程池的使用/" rel="prev" title="java线程池的使用">
-                java线程池的使用 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+    </header>
   </article>
 
 
-
-    <div class="post-spread">
       
     </div>
+
   </div>
-
-
-          </div>
-          
+  
+  
+  
 
   
 
 
+
+          </div>
+          
 
         </div>
         
@@ -613,17 +406,8 @@ System.out.println(filter.orElse(1));
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -768,22 +552,6 @@ System.out.println(filter.orElse(1));
       </section>
 
       
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方解释"><span class="nav-number">1.</span> <span class="nav-text">官方解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码示例"><span class="nav-number">2.</span> <span class="nav-text">代码示例</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
 
       
 
@@ -926,10 +694,6 @@ System.out.println(filter.orElse(1));
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
-
-
 
   
 
