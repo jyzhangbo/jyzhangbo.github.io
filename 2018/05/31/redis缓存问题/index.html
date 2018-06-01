@@ -115,18 +115,18 @@
 
 
 
-  <meta name="description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题 redis序列化问题redis默认序列化通过查看RedisTemplate和StringRedisTemplate的源代码，可以很清楚的看到RedisTemplate默认使用的是JdkSerializationRedisSerializer，StringRedisTemplate默认使用的是">
+  <meta name="description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis缓存问题">
 <meta property="og:url" content="http://jyzhangbo.cn/2018/05/31/redis缓存问题/index.html">
 <meta property="og:site_name" content="jyzhangbo的博客">
-<meta property="og:description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题 redis序列化问题redis默认序列化通过查看RedisTemplate和StringRedisTemplate的源代码，可以很清楚的看到RedisTemplate默认使用的是JdkSerializationRedisSerializer，StringRedisTemplate默认使用的是">
+<meta property="og:description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-01T07:48:14.268Z">
+<meta property="og:updated_time" content="2018-06-01T08:03:33.979Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis缓存问题">
-<meta name="twitter:description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题 redis序列化问题redis默认序列化通过查看RedisTemplate和StringRedisTemplate的源代码，可以很清楚的看到RedisTemplate默认使用的是JdkSerializationRedisSerializer，StringRedisTemplate默认使用的是">
+<meta name="twitter:description" content="在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题">
 
 
 
@@ -385,7 +385,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-01 15:48:14" itemprop="dateModified" datetime="2018-06-01T15:48:14+08:00">2018-06-01</time>
+                <time title="修改时间：2018-06-01 16:03:33" itemprop="dateModified" datetime="2018-06-01T16:03:33+08:00">2018-06-01</time>
               
             
           </span>
@@ -437,6 +437,7 @@
 
       
         <p>在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题</p>
+<a id="more"></a>
 <h3 id="redis序列化问题"><a href="#redis序列化问题" class="headerlink" title="redis序列化问题"></a>redis序列化问题</h3><h4 id="redis默认序列化"><a href="#redis默认序列化" class="headerlink" title="redis默认序列化"></a>redis默认序列化</h4><p>通过查看RedisTemplate和StringRedisTemplate的源代码，可以很清楚的看到RedisTemplate默认使用的是JdkSerializationRedisSerializer，StringRedisTemplate默认使用的是StringRedisSerializer</p>
 <h4 id="spring-data提供的可用序列化"><a href="#spring-data提供的可用序列化" class="headerlink" title="spring data提供的可用序列化"></a>spring data提供的可用序列化</h4><ul>
 <li>GenericToStringSerializer</li>

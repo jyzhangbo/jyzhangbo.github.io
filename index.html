@@ -538,7 +538,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-01 15:48:14" itemprop="dateModified" datetime="2018-06-01T15:48:14+08:00">2018-06-01</time>
+                <time title="修改时间：2018-06-01 16:03:33" itemprop="dateModified" datetime="2018-06-01T16:03:33+08:00">2018-06-01</time>
               
             
           </span>
@@ -590,160 +590,14 @@
 
       
         
-          
-            <p>在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题</p>
-<h3 id="redis序列化问题"><a href="#redis序列化问题" class="headerlink" title="redis序列化问题"></a>redis序列化问题</h3><h4 id="redis默认序列化"><a href="#redis默认序列化" class="headerlink" title="redis默认序列化"></a>redis默认序列化</h4><p>通过查看RedisTemplate和StringRedisTemplate的源代码，可以很清楚的看到RedisTemplate默认使用的是JdkSerializationRedisSerializer，StringRedisTemplate默认使用的是StringRedisSerializer</p>
-<h4 id="spring-data提供的可用序列化"><a href="#spring-data提供的可用序列化" class="headerlink" title="spring data提供的可用序列化"></a>spring data提供的可用序列化</h4><ul>
-<li>GenericToStringSerializer</li>
-<li>Jackson2JsonRedisSerializer</li>
-<li>JacksonJsonRedisSerializer</li>
-<li>JdkSerializationRedisSerializer ：使用JDK提供的序列化功能。 优点是反序列化时不需要提供类型信息(class)，但缺点是需要实现Serializable接口，还有序列化后的结果非常庞大，是JSON格式的5倍左右，这样就会消耗redis服务器的大量内存</li>
-<li>OxmSerializer</li>
-<li>StringRedisSerializer ：使用Jackson库将对象序列化为JSON字符串。优点是速度快，序列化后的字符串短小精悍，不需要实现Serializable接口。但缺点也非常致命，那就是此类的构造函数中有一个类型参数，必须提供要序列化对象的类型信息(.class对象)。 通过查看源代码，发现其只在反序列化过程中用到了类型信息</li>
-</ul>
-<h4 id="使用过程中遇到的问题"><a href="#使用过程中遇到的问题" class="headerlink" title="使用过程中遇到的问题"></a>使用过程中遇到的问题</h4><ol>
-<li>RedisTemplate的key指定成StringRedisSerializer序列化会报类型转换错误，如XXX类不能转换成String</li>
-<li>使用Jackson2JsonRedisSerializer序列化的时候,如果实体类上没有set方法反序列化会报错</li>
-<li>使用Jackson2JsonRedisSerializer序列化的时候,如果实体类上被final修饰，在序列化的时候会报错</li>
-</ol>
-<h4 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h4><ol>
-<li>使用StringRedisSerializer做key的序列化时，StringRedisSerializer的泛型指定的是String，传其他对象就会报类型转换错误，在使用@Cacheable注解是key属性就只能传String进来。</li>
-</ol>
-<pre><code>public byte[] serialize(String string) {
-    return (string == null ? null : string.getBytes(charset));
-} 
-</code></pre><p>解决方案：自定义序列化，将序列化的方法参数改为Object对象</p>
-<pre><code>public class KeyStringRedisSerializer implements RedisSerializer {
-
-    private final Charset charset;
-
-    private final String target = &quot;\&quot;&quot;;
-
-    private final String replacement = &quot;&quot;;
-
-    public KeyStringRedisSerializer(){
-        this(Charset.forName(&quot;UTF8&quot;));
-    }
-
-    public KeyStringRedisSerializer(Charset charset){
-        Assert.notNull(charset, &quot;Charset must not be null!&quot;);
-        this.charset = charset;
-    }
-
-    @Override
-    public byte[] serialize(Object object) throws SerializationException {
-        String string = Json.toJson(object);
-        if (string == null) {
-            return null;
-        }
-        string = string.replace(target, replacement);
-        return string.getBytes(charset);
-    }
-
-    @Override
-    public Object deserialize(byte[] bytes) throws SerializationException {
-        return (bytes == null ? null : new String(bytes, charset));
-    }
-}
-</code></pre><p>2和3问题我觉得很好解决啊，添加上set方法和删除final修饰就行了 </p>
-<h3 id="缓存名称得问题"><a href="#缓存名称得问题" class="headerlink" title="缓存名称得问题"></a>缓存名称得问题</h3><p>通过查看spring boot autoconfigure里面关于redis自动装配得源代码可以知道程序会先加载RedisAutoConfiguration，然后加载RedisCacheConfiguration。</p>
-<p>在RedisAutoConfiguration里面会初始化RedisTemplate</p>
-<pre><code>@Configuration
-protected static class RedisConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean(name = &quot;redisTemplate&quot;)
-    public RedisTemplate&lt;Object, Object&gt; redisTemplate(
-            RedisConnectionFactory redisConnectionFactory)
-                    throws UnknownHostException {
-        RedisTemplate&lt;Object, Object&gt; template = new RedisTemplate&lt;Object, Object&gt;();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(StringRedisTemplate.class)
-    public StringRedisTemplate stringRedisTemplate(
-            RedisConnectionFactory redisConnectionFactory)
-                    throws UnknownHostException {
-        StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
-    }
-
-}
-</code></pre><p>在RedisCacheConfiguration里面会初始化RedisCacheManager</p>
-<pre><code>@Configuration
-@AutoConfigureAfter(RedisAutoConfiguration.class)
-@ConditionalOnBean(RedisTemplate.class)
-@ConditionalOnMissingBean(CacheManager.class)
-@Conditional(CacheCondition.class)
-class RedisCacheConfiguration {
-
-    private final CacheProperties cacheProperties;
-
-    private final CacheManagerCustomizers customizerInvoker;
-
-    RedisCacheConfiguration(CacheProperties cacheProperties,
-            CacheManagerCustomizers customizerInvoker) {
-        this.cacheProperties = cacheProperties;
-        this.customizerInvoker = customizerInvoker;
-    }
-
-    @Bean
-    public RedisCacheManager cacheManager(RedisTemplate&lt;Object, Object&gt; redisTemplate) {
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        cacheManager.setUsePrefix(true);
-        List&lt;String&gt; cacheNames = this.cacheProperties.getCacheNames();
-        if (!cacheNames.isEmpty()) {
-            cacheManager.setCacheNames(cacheNames);
-        }
-        return this.customizerInvoker.customize(cacheManager);
-    }
-
-}
-</code></pre><p>通过代码可以看到在初始化RedisCacheManager得时候设置了usePrefix为true，这样通过redis命令行查看得时候key都会添加上缓存名称。</p>
-<p>但是我在程序中会设置缓存得有效期，就需要自己来配置RedisCacheManager，这样RedisCacheConfiguration就不会初始化了，这个时候在redis命令行查看key的时候，就没有缓存名称了。这个时候就需要自己来配置usePrefix为true。</p>
-<p>这样我自己的redis配置代码如下：</p>
-<pre><code>@Configuration
-@EnableCaching
-public class CacheConfig {
-
-    @Bean
-    public CacheManager cacheManager(RedisTemplate redisTemplate){
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        //设置使用缓存名称，如果不设置，通过命令行查询key，则没有缓存名称的前缀
-        cacheManager.setUsePrefix(true);
-        //设置缓存的过期时间
-        cacheManager.setDefaultExpiration(10*60);
-        return cacheManager;
-    }
-
-    @Bean
-    public RedisTemplate&lt;Object, Object&gt; redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate&lt;Object, Object&gt; redisTemplate = new RedisTemplate&lt;&gt;();
-        redisTemplate.setConnectionFactory(connectionFactory);
-
-        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-
-        serializer.setObjectMapper(mapper);
-
-        redisTemplate.setValueSerializer(serializer);
-
-        //将key的序列化设置为自己实现的序列化方式
-        redisTemplate.setKeySerializer(new KeyStringRedisSerializer());
-
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
-    }
-
-}
-</code></pre>
-          
+          <p>在springboot项目中使用redis来做缓存得过程中遇到得一些问题，主要就是序列化和缓存名称两个问题</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/31/redis缓存问题/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
